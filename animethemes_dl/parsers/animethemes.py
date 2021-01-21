@@ -94,16 +94,32 @@ def run_executor(animelist: List[Tuple[int,str]], progressbar: str='') -> Iterab
     Goes thorugh anime entries and yields their api returns.
     """
     measure = Measure()
-    with ThreadPoolExecutor(MAXWORKERS) as executor:
-        i=0
-        for i,(animentry,anime) in enumerate(executor.map(request_anime,animelist),1):
-            if isinstance(anime,AnimeThemesTimeout):
-                break
+
+    to_do = list(animelist)
+    i = 1
+
+    while to_do:
+        new_to_do = []
+
+        for animentry in to_do:
+            animentry, anime = request_anime(animentry)
+
+            if isinstance(anime, AnimeThemesTimeout):
+                logger.info("Got a timeout. Sleeping for 10 secs...")
+                time.sleep(10)
+                to_do.append(animentry)
+                continue
+            else:
+                i += 1
+
             if progressbar:
                 print(progressbar%(i,len(animelist)),end='\r')
             if anime:
                 yield anime
-    
+
+        to_do = new_to_do
+
+
     if progressbar: logger.info(f'[get] Got {i} entries from animethemes in {measure()}s.')
 
 def pick_needed(animelist: List[Tuple[int,str]]) -> Tuple[List[Tuple[int,str]],List[AnimeThemeAnime]]:

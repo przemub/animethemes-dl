@@ -30,4 +30,4 @@ def get_animethemes(username: str, anilist: bool=False, **animelist_args) -> Lis
 
 if __name__ == "__main__":
     from pprint import pprint
-    pprint(get_animethemes('sadru'))
+    pprint(get_animethemes('przemub'))
