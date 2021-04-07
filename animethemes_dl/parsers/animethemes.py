@@ -52,14 +52,14 @@ def make_anime_request(title: str) -> Union[List[AnimeThemeAnime],AnimeThemesTim
     if isinstance(anime,AnimeThemesTimeout):
         return anime
     elif anime:
-        return anime['anime']
+        return anime['search']['anime']
     
     title = ''.join(i for i in title if not i.isdigit()) # remove numbers
-    anime = api_search(title)['anime']
+    anime = api_search(title)['search']['anime']
     if isinstance(anime,AnimeThemesTimeout):
         return anime
     elif anime:
-        return anime['anime']
+        return anime['search']['anime']
 
 def get_malid(anime: AnimeThemeAnime) -> int:
     """
